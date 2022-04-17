@@ -1,58 +1,24 @@
 const express = require('express')
-const contactsModel = require('../../db/contacts')
-const router = express.Router()
-const { schemaCreateContact, schemaUpdateContact } = require('./contacts-validation-schems')
-const { validateBody } = require('../../middlewars/validation')
+const {
+  getContacts,
+  getContactById,
+  createContact,
+  updateContact,
+  deleteContact,
+  updateFavorite,
+} = require('../../controllers/contacts')
+const { schemaCreateContact, schemaUpdateContact, schemaMongoId, schemaFavorite } = require('./contacts-validation-schems') 
+const {validateBody, validateParams} = require('../../middlewars/validation')
 
-  
-router.get('/', async (req, res, next) => {
-  const contacts = await contactsModel.listContacts()
-  res.json({status: 'success', code: 200, payload: {contacts} })
-})
+ const router = express.Router()
 
-
- 
-router.get('/:contactId', async (req, res, next) => {
-  const contact = await contactsModel.getContactById(req.params.contactId)
-  if (contact) {
-    return res.json({ status: 'success', code: 200, payload: { contact } })
-  }
-  return res.status(404).json({ status: 'eror', code: 404, message: 'Not Found ' })
-  
-})
-
-router.post('/', validateBody(schemaCreateContact),
-   
-  async (req, res, next) => {
-  const contact = await contactsModel.addContact(req.body)
-  res.status(201).json({ status: 'success', code: 201, payload: { contact } })
-})
-
-router.delete('/:contactId', async (req, res, next) => {
-  const contact = await contactsModel.removeContact(req.params.contactId)
-  if (contact) {
-    return res.json({ status: 'success', code: 200, payload: { contact } })
-  }
-  return res.status(404).json({ status: 'eror', code: 404, message: 'Not Found ' })
-
-})
+router.get('/', getContacts)
+router.get('/:contactId', validateParams(schemaMongoId), getContactById)
+router.post('/', validateBody(schemaCreateContact), createContact)
+router.put('/:contactId', validateParams(schemaMongoId), validateBody(schemaUpdateContact), updateContact)
+router.delete('/:contactId', validateParams(schemaMongoId), deleteContact)
+router.put('/:contactId/favorite', validateParams(schemaMongoId), validateBody(schemaFavorite), updateFavorite)
 
 
 
-// router.put('/:contactId', async (req, res, next) => {
-//   const contact = await contactsModel.updateContact(req.params.contactId, req.body)
-//   if (contact) {
-//     return res.json({ status: 'success', code: 200, payload: { contact } })
-//   }
-//   return res.status(404).json({ status: 'eror', code: 404, message: 'Not Found ' })
-// })
-
-
-router.patch('/:contactId', validateBody(schemaUpdateContact), async (req, res, next) => {
-  const contact = await contactsModel.updateContact(req.params.contactId, req.body)
-  if (contact) {
-    return res.json({ status: 'success', code: 200, payload: { contact } })
-  }
-  return res.status(404).json({ status: 'eror', code: 404, message: 'Not Found ' })
-})
 module.exports = router
