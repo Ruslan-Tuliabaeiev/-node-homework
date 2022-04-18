@@ -1,5 +1,5 @@
 const contactsRepository = require('../../repository/contacts');
-const HTTP_STATUS_CODES = require('../../libs/constants');
+const {HTTP_STATUS_CODES} = require('../../libs/constants');
 
 
 
@@ -22,8 +22,9 @@ const getContactById = async (req, res, next) => {
     
 const createContact = async (req, res, next) => {
     const contact = await contactsRepository.createContact(req.body)
-    console.log(contact);
-    res.status(HTTP_STATUS_CODES.CREATED).json({ status: 'success', code: HTTP_STATUS_CODES.CREATED, payload: { ...contact } })
+    // console.log(contact);
+    // console.log(HTTP_STATUS_CODES.CREATED);
+    res.status(HTTP_STATUS_CODES.CREATED).json({ status: 'success', code: HTTP_STATUS_CODES.CREATED, payload: {contact } })
 }
 
 const updateContact = async (req, res, next) => {
