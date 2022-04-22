@@ -9,6 +9,11 @@ const HTTP_STATUS_CODES = {
     INTERNAL_SERVER_ERROR: 500,
 
 } 
+const Role = {
+    STARTER: 'starter',
+    PRO: 'pro',
+    BUSINESS: 'business',
+}
 
 
-module.exports = { HTTP_STATUS_CODES }
+module.exports = { HTTP_STATUS_CODES, Role };
