@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
 const { Role } = require('../libs/constants');
-
+const { randomUUID} = require('crypto');
 
 
 const userSchema = new Schema({
@@ -31,6 +31,12 @@ const userSchema = new Schema({
             return gravatar.url(this.email, { s: '250' }, true);
         },
     },
+    cloudId: { type: String, default: null },
+       isVerify:{ type: Boolean, default: false },
+    verifyEmailToken: { type: String, default: randomUUID() },
+    
+  
+
 
 },
  {
@@ -53,6 +59,7 @@ userSchema.methods.isValidPassword = async function (password) {
 }
 
 const User = model('user', userSchema);
+
 module.exports = User;
 
 
